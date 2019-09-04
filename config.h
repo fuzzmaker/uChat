@@ -13,12 +13,18 @@
 #include<select.h>
 #include<pthread.h>
 #include<arpa/inet.h>
+#include<mysql.h>
 #include "linked.h"
 
-#define SERVER_IP 127.0.0.1
+#define SERVER_IP "127.0.0.1"
 #define PORT 8888
 #define DB_FILE "/var/db/chatuser"
 #define BUF_MAXSIZE 8126
+
+#define DB_SERVER "127.0.0.1"
+#define DB_UNAME "root"
+#define DB_PASSWD "root"
+#define DB_NAME "test"
 
 /*定义描述符集大小*/
 #ifndef FD_SETSIZE
@@ -83,6 +89,7 @@ typedef struct _user{
 /*消息分发处理*/
 void requestHandler(Message *msg,int fd);
 
+/*登录逻辑处理*/
 void login(Message msg,int fd);
 
 void groupChat(Message msg,int fd);
@@ -125,4 +132,18 @@ void mainInterface();
 /*帮助信息*/
 void helpInterface();
 
+/*数据库操作接口*/
+/*获取连接*/
+MYSQL *getCon();
 
+/*新增用户*/
+int addUser(User user);
+
+/*修改状态*/
+int updateUserState(int state);
+
+/*根据名字获取用户信息*/
+User getUserByName(const Char *name);
+
+/*格式化错误信息*/
+void errorMsg(MYSQL *con);
