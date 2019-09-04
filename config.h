@@ -14,6 +14,7 @@
 #include<pthread.h>
 #include<arpa/inet.h>
 #include<mysql.h>
+#include<time.h>
 #include "linked.h"
 
 #define SERVER_IP "127.0.0.1"
@@ -87,7 +88,7 @@ typedef struct _user{
 
 /*服务端接口定义*/
 /*消息分发处理*/
-void requestHandler(Message *msg,int fd);
+void requestHandler(int fd);
 
 /*登录逻辑处理*/
 void login(Message msg,int fd);
