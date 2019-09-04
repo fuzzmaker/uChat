@@ -11,9 +11,28 @@ MYSQL *getCon(){
 }
 
 
-void addUser(User user){
+int addUser(User user){
 	MYSQL *con=getCon();
+	time_t time;
+	time(&time);
+	struct tm *now=localtime(&time);
+	sprintf(user.regTime,"%d-%d-%d %d:%d:%d",tm->tm_year+1900,tm->tm_mon+1,tm->tm_hour,tm->tm_min,tm->tm_sec);
+	char *sql="insert into t_user values(";
+	strcat(sql,user.name);
+	strcat(sql,",");
+	strcat(sql,user.passwd);
+        strcat(sql,",");
+	strcat(sql,user.state);
+        strcat(sql,",str_to_date('");
+	strcat(sql,user.regTime);
+        strcat(sql,",'%Y-%m-%d %H:%m:%i'))");
+	if(!mysql_query(con,sql)){
+		errorMsg(con);
+		mysql_close(con);
+		return 0;
+	}
 	mysql_close(con);
+	return 1;
 }
 
 
