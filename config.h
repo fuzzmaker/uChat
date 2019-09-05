@@ -14,6 +14,7 @@
 #include<pthread.h>
 #include<arpa/inet.h>
 #include<mysql.h>
+#include<time.h>
 #include "linked.h"
 
 #define SERVER_IP "127.0.0.1"
@@ -78,6 +79,7 @@ typedef struct _message{
 
 /*用户信息结构体*/
 typedef struct _user{
+	int id;//用户id
 	char name[20]; //用户名
 	char passwd[20]; //密码
 	int fd; //套接字描述符
@@ -140,7 +142,7 @@ MYSQL *getCon();
 int addUser(User user);
 
 /*修改状态*/
-int updateUserState(int state);
+int updateUserState(const char *name,const int state);
 
 /*根据名字获取用户信息*/
 User getUserByName(const Char *name);
