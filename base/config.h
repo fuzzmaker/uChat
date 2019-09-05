@@ -91,17 +91,17 @@ typedef struct _user{
 void requestHandler(int fd);
 
 /*登录逻辑处理*/
-void login(Message msg,int fd);
+void login(Message *msg,int fd);
 
-void groupChat(Message msg,int fd);
+void groupChat(Message *msg,int fd);
 
-void privateChat(Message msg,int fd);
+void privateChat(Message *msg,int fd);
 
-void registion(Message msg,int fd);
+void registion(Message *msg,int fd);
 
-void listUsers(Message msg,int fd);
+void listUsers(Message *msg,int fd);
 
-void histRecords(Message msg,int fd);
+void histRecords(Message *msg,int fd);
 
 char *geterrmsg(int state);
 
@@ -109,7 +109,7 @@ User *getUserByName(const char *name);
 
 /*客户端接口定义*/
 /*登录*/
-void login(Message *msg,int fd);
+void login(int fd);
 
 /*进入聊天室*/
 void enterChat(int fd);
