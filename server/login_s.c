@@ -1,19 +1,14 @@
 #include "config.h"
 
-void login(Message msg,int fd){
+void login(Message *msg,int fd){
 	Message reMsg;
-	User user;
 	char buf[MAX_BUFSIZE];
+	char delims[]=",";
+	char *name,*passwd;
 	memset(buf,0,MAX_BUFSIZE);
-	memset(&user,0,sizeof(user));
-	int len;
-	len=recv(fd,buf,MAX_BUFSIZE,0);
-	if(len<=0){
-		puts("登录失败\n");
-		_exit(0);
-	}
-	memcpy(&user,buf,len);
-	User *oUser=getUserByName(user.name);
+	name=strtok(msg.content,delims);
+	passwd=strtok(NULL,delims);
+	User *oUser=getUserByName(name);
 	if(oUser==NULL){
 		reMsg.msgType=LOGIN;
 		reMsg.state=UNREGISTION;
@@ -32,7 +27,7 @@ void login(Message msg,int fd){
         	close(fd);
 		_exit(0);                           
 	 }
-	if(strcmp(oUser->passwd,user.passwd)!=0){
+	if(strcmp(oUser->passwd,passwd)!=0){
 		reMsg.msgType=LOGIN;                 	
 		reMsg.state=WRONGPASSWD;             
 		reMsg.content=geterrmsg(reMsg.state);

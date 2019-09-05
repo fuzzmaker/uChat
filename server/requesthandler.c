@@ -9,22 +9,22 @@ void requestHandler(int fd){
 	memcpy(&msg,buf,MAX_BUFSIZE);
 	switch(msg.msgType){
 		case LOGIN:
-			login(msg,fd);
+			login(&msg,fd);
 			break;
 		case REGISTION:
-			registion(msg,fd);
+			registion(&msg,fd);
 			break;
 		case GROUPCHAT:
-			groupChat(msg,fd);
+			groupChat(&msg,fd);
 			break;
 		case PRIVCHAT:
-			privChat(msg,fd);
+			privChat(&msg,fd);
 			break;
 		case LISTUSERS:
-			listUsers(msg,fd);
+			listUsers(&msg,fd);
 			break;
 		case HISTRECORDS:
-			hisRecords(msg,fd);
+			hisRecords(&msg,fd);
 			break;
 		case UNKNOWN:
 			fprintf(stderr,"unknown request msg type");
