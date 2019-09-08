@@ -19,6 +19,7 @@ void login(int fd){
 	int len=recv(fd,buf,MAX_BUFSIZE,0);
 	if(len<0){
 		puts("登录失败,连接异常\n");
+		close(fd);
 		_exit(0);
 	}
 	memcpy(msg,buf,len);
@@ -29,12 +30,13 @@ void login(int fd){
 		case SUCCESS:
 			puts("登录成功!");
 			//进入聊天室
-			enterChat(fd);
+			enterChat(&user,fd);
 			break;
 		default:
 			puts("unknow state");
 			break;
 	}
+	close(fd);
 	_exit(0);
 	
 }

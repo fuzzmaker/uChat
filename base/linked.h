@@ -14,5 +14,6 @@ void add(Node *linked,void *val);
 
 void remove(Node *linked,void *val);
 
-void destroy(Node *linked);
+char *display();
 
+void destroy(Node *linked);

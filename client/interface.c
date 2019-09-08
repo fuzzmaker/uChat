@@ -11,7 +11,7 @@ void mainInterface(){
 	puts("3.退出\n");	
 }
 
-void helpInterface(){
+void chatTypeInterface(){
 	puts("**************************************\n");
         puts("*                                    *\n");
         puts("*              帮助信息              *\n");
@@ -21,4 +21,9 @@ void helpInterface(){
         puts("2.群聊\n");
         puts("3.查看在线用户\n");
 	puts("4.退出\n");	
+}
+
+
+void helpInterface(){
+	
 }

@@ -9,28 +9,26 @@ void login(Message *msg,int fd){
 	name=strtok(msg.content,delims);
 	passwd=strtok(NULL,delims);
 	User *oUser=getUserByName(name);
+	reMsg.msgType=RESULT;
 	if(oUser==NULL){
-		reMsg.msgType=LOGIN;
 		reMsg.state=UNREGISTION;
-		reMsg.content=geterrmsg(reMsg.state);
+		strcpy(reMsg.content,geterrmsg(reMsg.state));
 		memcpy(buf,&reMsg,sizeof(reMsg));
 		send(fd,buf,MAX_BUFSIZE);
 		close(fd);
 		_exit(0);
 	}
 	if(oUser->state==ALREADY_ONLINE){
-		reMsg.msgType=LOGIN;                 	
         	reMsg.state=ALREADY_ONLINE;
-        	reMsg.content=geterrmsg(reMsg.state);
+        	strcpy(reMsg.content,geterrmsg(reMsg.state));
         	memcpy(buf,&reMsg,sizeof(reMsg));
         	send(fd,buf,MAX_BUFSIZE);
         	close(fd);
 		_exit(0);                           
 	 }
 	if(strcmp(oUser->passwd,passwd)!=0){
-		reMsg.msgType=LOGIN;                 	
 		reMsg.state=WRONGPASSWD;             
-		reMsg.content=geterrmsg(reMsg.state);
+		strcpy(reMsg.content,geterrmsg(reMsg.state));
 		memcpy(buf,&reMsg,sizeof(reMsg));
        		send(fd,buf,MAX_BUFSIZE);
         	close(fd);
@@ -40,9 +38,8 @@ void login(Message *msg,int fd){
 	oUser->fd=fd;
 	add(user_list,oUser);	
 	//回复客户端
-	reMsg.msgType=LOGIN;                 	
 	reMsg.state=SUCCESS;             
-	reMsg.content=geterrmsg(reMsg.state);
+	strcpy(reMsg.content,geterrmsg(reMsg.state));
 	memcpy(buf,&reMsg,sizeof(reMsg));
        	send(fd,buf,MAX_BUFSIZE);
         _exit(0);

@@ -45,7 +45,6 @@ void registion(int fd){
 		printf("%s\n",msg.content);
 		printf("=================================\n");
 	}
-	mainInterface();
 	close(fd);
 	_exit(0);
 

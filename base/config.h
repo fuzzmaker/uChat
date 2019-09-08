@@ -20,7 +20,8 @@
 #define SERVER_IP "127.0.0.1"
 #define PORT 8888
 #define DB_FILE "/var/db/chatuser"
-#define BUF_MAXSIZE 8126
+#define MAX_BUFSIZE 8126
+#define MAX_MSGSIZE 2048
 
 #define DB_SERVER "127.0.0.1"
 #define DB_UNAME "root"
@@ -70,7 +71,7 @@ typedef struct _message{
 	char sendName[20]; //发送用户名
 	int msgType; //消息类型
 	int state; //消息状态
-	char content[2048]; //消息内容
+	char content[MAX_MSGSIZE]; //消息内容
 	struct sockaddr_in recvAddr; //接收端地址
 	struct sockaddr_in sendAddr; //发送端地址
 	char sendTime[20]; //发送时间
@@ -112,7 +113,7 @@ User *getUserByName(const char *name);
 void login(int fd);
 
 /*进入聊天室*/
-void enterChat(int fd);
+void enterChat(User *user,int fd);
 
 /*注册*/
 void registion(int fd); 
@@ -134,6 +135,9 @@ void mainInterface();
 
 /*帮助信息*/
 void helpInterface();
+
+/*聊天类型展示接口*/
+void chatTypeInterface();
 
 /*数据库操作接口*/
 /*获取连接*/

@@ -35,6 +35,11 @@ void remove(Node *linked,void *val){
 }
 
 
+char *display(Node *linked){
+	
+}
+
+
 void destroy(){
 	if(lk_size==0) return;
 	Node *temp=lk_head;
