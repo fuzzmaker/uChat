@@ -1,19 +1,23 @@
 
-typedef node{
+/*定义内部数据节点结构体*/
+typedef struct node{
 	void *val;
-	Node *next;
+	struct node *next;
 }Node;
 
-Node *lk_head;
-Node *cur_node;
-int lk_size;
+typedef struct linked{
+	Node *head;
+	Node *tail;
+	int size;
+	void (*insertNode)(Node *nd,void *val);
+	void (*removeNode)(Node *nd,void *val);
+}Linked;
 
-Node *create_linked();
-
-void add(Node *linked,void *val);
-
-void remove(Node *linked,void *val);
-
-char *display();
-
-void destroy(Node *linked);
+/*初始化创建链表*/
+Linked *init_linked(Linked *lkd);
+/*销毁链表*/
+void distroy_linked(Linked *lkd);
+/*插入节点*/
+static void insertNode(Linked *lkd,void *val);
+/*删除节点*/
+static void removeNode(Linked *lkd,void *val);

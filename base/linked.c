@@ -1,48 +1,46 @@
 #include<stdlib.h>
 #include "linked.h"
 
-Node *create_linked(){
-	lk_size=0;
-	lk_head=NULL;
-	cur_node=NULL;
-	return lk_head;
+void *init_linked(Linked *lkd){
+	lkd->head=NULL;
+	lkd->tail=NULL;
+	lkd->size=0;
+	lkd->insertNode;
+	lkd->removeNode;
+	lkd->display;
 }
 
-void add(Node *linked,void *val){
+static void insertNode(Linked *lkd,void *val){
 	Node *new_node=malloc(sizeof(struct Node));
 	new_node->val=val;
-	if(cur_node==NULL){
-		lk_head=new_node;
-		cur_node=new_node;
+	if(lkd->head==NULL){
+		lkd->head=new_node;
+		lkd->tail=new_node;
 	}else{
-		cur_node->next=new_node;
+		Node *tail=lkd->tail;
+		tail->next=new_node;
 	}
-	lk_size++;
+	lkd->size++;
 }
 
-void remove(Node *linked,void *val){
-	if(lk_size==0) return;
-	Node *temp=lk_head;
+static void remove(Linked *lkd,void *val){
+	if(lkd->size==0) return;
+	Node *temp=lkd->head;
 	while(temp!=NULL){
 		if(temp->val==val){
 			Node *oNext=temp->next;
 			free(temp);
 			temp=oNext;
-			lk_size++;
+			lkd->size++;
 			break;	
 		}
 	}
 }
 
 
-char *display(Node *linked){
-	
-}
-
-
-void destroy(){
-	if(lk_size==0) return;
-	Node *temp=lk_head;
+void destroy(Linked *lkd){
+	if(lkd->size==0) return;
+	Node *temp=lkd->head;
 	while(temp!=NULL){
 		Node *oNext=temp->next;
 		free(temp);
