@@ -93,20 +93,18 @@ void requestHandler(int fd);
 
 /*登录逻辑处理*/
 void login(Message *msg,int fd);
-
+/*群聊*/
 void groupChat(Message *msg,int fd);
-
-void privateChat(Message *msg,int fd);
-
+/*私聊*/
+void privChat(Message *msg,int fd);
+/*注册*/
 void registion(Message *msg,int fd);
-
+/*查看在线用户列表*/
 void listUsers(Message *msg,int fd);
-
+/*查看历史消息记录*/
 void histRecords(Message *msg,int fd);
-
+/*获取错误消息*/
 char *geterrmsg(int state);
-
-User *getUserByName(const char *name);
 
 /*客户端接口定义*/
 /*登录*/
@@ -117,12 +115,6 @@ void enterChat(User *user,int fd);
 
 /*注册*/
 void registion(int fd); 
-
-/*群聊*/
-void groupChat(int fd);
-
-/*私聊*/
-void privateChat(int fd);
 
 /*登出*/
 void logout(int fd);

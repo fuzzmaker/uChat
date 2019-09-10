@@ -1,7 +1,7 @@
 #include "config.h"
 
 
-Node *userList=NULL;
+Linked *userList=NULL;
 
 int main(void){
 	struct sockaddr_in s_addr,c_addr;

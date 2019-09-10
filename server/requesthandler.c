@@ -24,7 +24,7 @@ void requestHandler(int fd){
 			listUsers(&msg,fd);
 			break;
 		case HISTRECORDS:
-			hisRecords(&msg,fd);
+			histRecords(&msg,fd);
 			break;
 		case UNKNOWN:
 			fprintf(stderr,"unknown request msg type");

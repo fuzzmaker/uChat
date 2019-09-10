@@ -36,7 +36,7 @@ void login(Message *msg,int fd){
 	}
 	//将user信息加入在线用户列表
 	oUser->fd=fd;
-	add(user_list,oUser);	
+	userList->insertNode(userList,oUser);
 	//回复客户端
 	reMsg.state=SUCCESS;             
 	strcpy(reMsg.content,geterrmsg(reMsg.state));
