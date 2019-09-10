@@ -15,14 +15,14 @@ void registion(Message *msg,int fd){
 		reMsg.state=FAIL;
 		strcpy(reMsg.content,"用户名不能为空");
 		memcpy(buf,&reMsg,sizeof(reMsg));
-		send(fd,buf,MAX_BUFSIZE);
+		send(fd,buf,MAX_BUFSIZE,0);
 		_exit(1);
 	}
 	if(passwd==NULL || strlen(passwd)==0){
 		reMsg.state=FAIL;
 		strcpy(reMsg.content,"密码不能为空");
 		memcpy(buf,&reMsg,sizeof(reMsg));
-		send(fd,buf,MAX_BUFSIZE);
+		send(fd,buf,MAX_BUFSIZE,0);
 		_exit(1);
 	}
 	user=getUserByName(name);
@@ -30,7 +30,7 @@ void registion(Message *msg,int fd){
 		reMsg.state=DUPLICA_NAME;
 		strcpy(reMsg.content,"用户名已存在");
 		memcpy(buf,&reMsg,sizeof(reMsg));
-		sned(fd,buf,MAX_BUFSIZE);
+		sned(fd,buf,MAX_BUFSIZE,0);
 		_exit(1);	
 	}
 	//保存用户
@@ -42,7 +42,7 @@ void registion(Message *msg,int fd){
 	reMsg.state=SUCCESS;
 	strcpy(reMsg.content,"注册成功,请前往登录");
 	memcpy(buf,&reMsg,sizeof(reMsg));
-	send(fd,buf,MAX_SIZEBUF);
+	send(fd,buf,MAX_SIZEBUF,0);
 	_exit(0);
 
 }

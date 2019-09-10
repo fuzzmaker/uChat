@@ -14,7 +14,7 @@ void login(Message *msg,int fd){
 		reMsg.state=UNREGISTION;
 		strcpy(reMsg.content,geterrmsg(reMsg.state));
 		memcpy(buf,&reMsg,sizeof(reMsg));
-		send(fd,buf,MAX_BUFSIZE);
+		send(fd,buf,MAX_BUFSIZE,0);
 		close(fd);
 		_exit(0);
 	}
@@ -22,7 +22,7 @@ void login(Message *msg,int fd){
         	reMsg.state=ALREADY_ONLINE;
         	strcpy(reMsg.content,geterrmsg(reMsg.state));
         	memcpy(buf,&reMsg,sizeof(reMsg));
-        	send(fd,buf,MAX_BUFSIZE);
+        	send(fd,buf,MAX_BUFSIZE,0);
         	close(fd);
 		_exit(0);                           
 	 }
@@ -30,7 +30,7 @@ void login(Message *msg,int fd){
 		reMsg.state=WRONGPASSWD;             
 		strcpy(reMsg.content,geterrmsg(reMsg.state));
 		memcpy(buf,&reMsg,sizeof(reMsg));
-       		send(fd,buf,MAX_BUFSIZE);
+       		send(fd,buf,MAX_BUFSIZE,0);
         	close(fd);
         	_exit(0);
 	}
@@ -41,7 +41,7 @@ void login(Message *msg,int fd){
 	reMsg.state=SUCCESS;             
 	strcpy(reMsg.content,geterrmsg(reMsg.state));
 	memcpy(buf,&reMsg,sizeof(reMsg));
-       	send(fd,buf,MAX_BUFSIZE);
+       	send(fd,buf,MAX_BUFSIZE,0);
         _exit(0);
 
 }

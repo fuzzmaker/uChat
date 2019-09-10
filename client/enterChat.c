@@ -31,7 +31,7 @@ void enterChat(User *user,int fd){
 					scanf("%s",msgbuf);
 					strcpy(msg.content,msgbuf);
 					memcpy(buf,&msg,sizeof(msg));
-					send(fd,buf,sizeof(buf));
+					send(fd,buf,sizeof(buf),0);
 				}
 				break;
 			case PRIVCHAT:
@@ -48,20 +48,20 @@ void enterChat(User *user,int fd){
 					scanf("%s",msgbuf);
 					strcpy(msg.content,msgbuf);
 					memcpy(buf,&msg,sizeof(msg));
-					send(fd,buf,sizeof(buf));
+					send(fd,buf,sizeof(buf),0);
 				}
 				break;
 			case LISTUSERS:
 				msg.msgType=LISTUSERS;
 				msg.content="";
 				memcpy(buf,&msg,sizeof(msg));
-				send(fd,buf,sizeof(buf));
+				send(fd,buf,sizeof(buf),0);
 				break;
 			case EXIT:
 				msg.msgType=EXIT;       	
                         	msg.content="";
                         	memcpy(buf,&msg,sizeof(msg));
-                        	send(fd,buf,sizeof(buf));
+                        	send(fd,buf,sizeof(buf),0);
 				close(fd);
 				break;
 			default :

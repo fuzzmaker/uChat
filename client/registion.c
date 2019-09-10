@@ -27,10 +27,10 @@ void registion(int fd){
 	strcat(msg.content,passwd);
 	msg.msgType=REGIST;
 	memcpy(buf,&msg,sizeof(msg));
-	send(fd,buf,MAX_BUFSIZE);
+	send(fd,buf,MAX_BUFSIZE,0);
 	memset(buf,0,MAX_BUFSIZE);
 	int len;
-	if((len=recv(fd,buf,MAX_BUFSIZE))<=0){
+	if((len=recv(fd,buf,MAX_BUFSIZE,0))<=0){
 		printf("注册失败\n");
 		close(fd);
 		_exit(1);

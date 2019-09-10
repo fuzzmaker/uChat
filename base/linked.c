@@ -5,6 +5,7 @@ void *init_linked(Linked *lkd){
 	lkd->head=NULL;
 	lkd->tail=NULL;
 	lkd->size=0;
+	lkd->compareTo=NULL;
 	lkd->insertNode;
 	lkd->removeNode;
 	lkd->display;
@@ -23,11 +24,12 @@ static void insertNode(Linked *lkd,void *val){
 	lkd->size++;
 }
 
-static void remove(Linked *lkd,void *val){
+static void removeNode(Linked *lkd,void *val){
 	if(lkd->size==0) return;
 	Node *temp=lkd->head;
 	while(temp!=NULL){
-		if(temp->val==val){
+		int cmp=lkd->compareTo==NULL?lkd->compareTo(temp->val,val):memcmp(temp->val,val);
+		if(cmp==0){
 			Node *oNext=temp->next;
 			free(temp);
 			temp=oNext;

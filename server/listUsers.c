@@ -19,6 +19,6 @@ void listUsers(int fd){
 	msg.msgType=RESULT;
 	msg.state=SUCCESS;
 	memcpy(buf,&msg,sizeof(msg));
-	send(fd,buf,sizeof(buf));
+	send(fd,buf,sizeof(buf),0);
 	_exit(0);
 }
