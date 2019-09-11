@@ -1,4 +1,4 @@
-#include "config.h"
+#include "../base/config.h"
 
 void recvMsg(int fd){
 	Message msg;

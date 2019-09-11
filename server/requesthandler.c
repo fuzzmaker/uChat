@@ -1,4 +1,4 @@
-#include "config.h"
+#include "../base/config.h"
 
 void requestHandler(int fd){
 	Message msg;
@@ -9,10 +9,10 @@ void requestHandler(int fd){
 	memcpy(&msg,buf,MAX_BUFSIZE);
 	switch(msg.msgType){
 		case LOGIN:
-			login(&msg,fd);
+			login_s(&msg,fd);
 			break;
 		case REGISTION:
-			registion(&msg,fd);
+			registion_s(&msg,fd);
 			break;
 		case GROUPCHAT:
 			groupChat(&msg,fd);
@@ -26,6 +26,8 @@ void requestHandler(int fd){
 		case HISTRECORDS:
 			histRecords(&msg,fd);
 			break;
+		case LOGOUT:
+			logout_s(&msg,fd);
 		case UNKNOWN:
 			fprintf(stderr,"unknown request msg type");
 			break;

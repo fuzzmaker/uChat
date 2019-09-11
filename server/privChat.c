@@ -1,4 +1,4 @@
-#include "config.h"
+#include "../base/config.h"
 
 void privChat(Message *msg,int fd){
 	Node *cursor=userList->head;

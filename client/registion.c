@@ -1,4 +1,4 @@
-#include "config.h"
+#include "../base/config.h"
 
 #define MAX_NAME_LEN 20
 

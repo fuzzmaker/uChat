@@ -1,6 +1,6 @@
-#include "config.h"
+#include "../base/config.h"
 
-void registion(Message *msg,int fd){
+void registion_s(Message *msg,int fd){
 	Message reMsg;
 	User *user;
 	char buf[MAX_BUFSIZE];

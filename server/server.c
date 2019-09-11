@@ -1,4 +1,4 @@
-#include "config.h"
+#include "../base/config.h"
 
 
 Linked *userList=NULL;
@@ -18,7 +18,7 @@ int main(void){
 		_exit(1);
 	}
 	memset(&s_addr,0,socklen);
-	memset(&c_addr,0,scoklen);
+	memset(&c_addr,0,socklen);
 	s_addr.sin_family=AF_INET;
 	s_addr.sin_addr.s_addr=inet_addr(SERVER_IP);
 	s_addr.sin_port=htons(SERVER_PORT);
@@ -32,23 +32,23 @@ int main(void){
 	}
 	FD_ZERO(&fdset);
 	FD_SET(sockfd,&fdset);
-	MAX_FD=sockfd;
+	max_fd=sockfd;
 	max_fd=sockfd>max_fd?sockfd:max_fd;
 	timeout.tv_sec=4;
 	timeout.tv_usec=0;
 	while(1){
 		rect=fdset;
 		int readyNum;
-		if((readNum=select(max_fd+1,&rect,NULL,NULL,timeout))>0){
+		if((readyNum=select(max_fd+1,&rect,NULL,NULL,&timeout))>0){
 			if(FD_ISSET(sockfd,&rect)){
-				int fd=accept(sockfd,(struct sockaddr *)&c_addr,socklen);
+				int fd=accept(sockfd,(struct sockaddr *)&c_addr,(socklen_t *)&socklen);
 				int ofd=fd>max_fd?fd:max_fd;
-				if(ofd>=MAX_LISETN_NUM){
+				if(ofd>=MAX_LISTEN_NUM){
 					fprintf(stderr,"fail to connect,is too many connection...");
 					memset(&msg,0,sizeof(msg));
 					memset(buf,0,MAX_LISTEN_NUM);
 					msg.msgType=RESULT;
-					msg.content="连接已达上限,请稍后再试";
+					strcpy(msg.content,"连接已达上限,请稍后再试");
 					msg.state=CONN_LIMIT;
 					memcpy(buf,&msg,sizeof(msg));
 					send(ofd,buf,sizeof(buf),0);
@@ -70,6 +70,6 @@ int main(void){
 			}
 		}
 	}
-	colse(sockfd);
+	close(sockfd);
 	_exit(0);
 }

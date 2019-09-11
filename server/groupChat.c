@@ -1,4 +1,4 @@
-#include "config.h"
+#include "../base/config.h"
 
 void groupChat(Message *msg,int fd){
 	User *user;

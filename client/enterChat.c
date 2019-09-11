@@ -1,4 +1,4 @@
-#include "config.h"
+#include "../base/config.h"
 
 void enterChat(User *user,int fd){
 	char buf[MAX_BUFSIZE];
@@ -57,13 +57,13 @@ void enterChat(User *user,int fd){
 				memcpy(buf,&msg,sizeof(msg));
 				send(fd,buf,sizeof(buf),0);
 				break;
-			case EXIT:
-				msg.msgType=EXIT;       	
+			case LOGOUT:
+				msg.msgType=LOGOUT;       	
                         	msg.content="";
                         	memcpy(buf,&msg,sizeof(msg));
                         	send(fd,buf,sizeof(buf),0);
 				close(fd);
-				break;
+				_exit(0);
 			default :
 				puts("unknow type\n");
 				break;

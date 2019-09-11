@@ -1,4 +1,4 @@
-#include "config.h"
+#include "../base/config.h"
 
 void listUsers(int fd){
 	Message msg;

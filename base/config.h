@@ -10,15 +10,16 @@
 #include<string.h>
 #include<sys/socket.h>
 #include<sys/types.h>
-#include<select.h>
+#include<sys/select.h>
 #include<pthread.h>
 #include<arpa/inet.h>
-#include<mysql.h>
+#include<mysql/mysql.h>
 #include<time.h>
 #include "linked.h"
 
 #define SERVER_IP "127.0.0.1"
-#define PORT 8888
+#define SERVER_PORT 8888
+#define MAX_LISTEN_NUM 20
 #define DB_FILE "/var/db/chatuser"
 #define MAX_BUFSIZE 8126
 #define MAX_MSGSIZE 2048
@@ -58,12 +59,13 @@ enum State{
 	CONN_LIMIT, //连接已达上线
 	SUCCESS, //成功
 	FAIL, //失败
+	UNREGIST,//未注册
 	DUPLICATE_NAME, //用户名重复
 	WRONGPWD, //密码错误
 	NO_ONE_ONLINE, //无人在线
 	NOT_ONLINE, //不在线
 	ALREADY_ONLINE //已经在线
-}
+};
 
 /*消息结构体*/
 typedef struct _message{
@@ -92,17 +94,19 @@ typedef struct _user{
 void requestHandler(int fd);
 
 /*登录逻辑处理*/
-void login(Message *msg,int fd);
+void login_s(Message *msg,int fd);
 /*群聊*/
 void groupChat(Message *msg,int fd);
 /*私聊*/
 void privChat(Message *msg,int fd);
 /*注册*/
-void registion(Message *msg,int fd);
+void registion_s(Message *msg,int fd);
 /*查看在线用户列表*/
 void listUsers(Message *msg,int fd);
 /*查看历史消息记录*/
 void histRecords(Message *msg,int fd);
+/*登出*/
+void logout_s(Message *msg,int fd);
 /*获取错误消息*/
 char *geterrmsg(int state);
 
@@ -115,12 +119,6 @@ void enterChat(User *user,int fd);
 
 /*注册*/
 void registion(int fd); 
-
-/*登出*/
-void logout(int fd);
-
-/*展示在线用户列表*/
-void listUsers(int fd);
 
 /*主界面提示*/
 void mainInterface();
@@ -142,7 +140,7 @@ int addUser(User user);
 int updateUserState(const char *name,const int state);
 
 /*根据名字获取用户信息*/
-User getUserByName(const Char *name);
+User *getUserByName(const char *name);
 
 /*格式化错误信息*/
 void errorMsg(MYSQL *con);

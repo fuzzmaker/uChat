@@ -1,6 +1,6 @@
-#include "config.h"
+#include "../base/config.h"
 
-void login(Message *msg,int fd){
+void login_s(Message *msg,int fd){
 	Message reMsg;
 	char buf[MAX_BUFSIZE];
 	char delims[]=",";

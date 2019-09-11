@@ -1,4 +1,4 @@
-#include "config.h"
+#include "../base/config.h"
 
 MYSQL *getCon(){
 	MYSQL con;
@@ -18,9 +18,9 @@ int addUser(User user){
 	time(&timeout);
 	struct tm *now;
 	now=localtime(&timeout);
-	mysql_init(&con);
-	if(mysql_real_connect(&con,"127.0.0.1","root","root","test",0,NULL,0)==NULL){
-		printf("connect mysql error %d:%s\n",mysql_errno(&con),mysql_error(&con));
+	mysql_init(con);
+	if(mysql_real_connect(con,"127.0.0.1","root","root","test",0,NULL,0)==NULL){
+		printf("connect mysql error %d:%s\n",mysql_errno(con),mysql_error(con));
 		_exit(1);
 	}
 	sprintf(user.regTime,"%d-%d-%d %d:%d:%d",now->tm_year+1900,now->tm_mon+1,now->tm_mday,now->tm_hour,now->tm_min,now->tm_sec);
@@ -36,13 +36,13 @@ int addUser(User user){
 	strcat(sql,user.regTime);
 	strcat(sql,"',");
 	strcat(sql,"'%Y-%m-%d %H:%i:%s'))");
-	if(mysql_query(&con,sql)){
-		printf("insert user error %d:%s\n",mysql_errno(&con),mysql_error(&con));
-		mysql_close(&con);
+	if(mysql_query(con,sql)){
+		printf("insert user error %d:%s\n",mysql_errno(con),mysql_error(con));
+		mysql_close(con);
 		return -1;
 	}
-	int id=mysql_insert_id(&con);
-	mysql_close(&con);
+	int id=mysql_insert_id(con);
+	mysql_close(con);
 	return id;                                                                                                                 
 }
 
@@ -65,7 +65,7 @@ int updateUserState(const char *name,const int state){
 	return 1;
 }
 
-User *getUserByName(char *name){
+User *getUserByName(const char *name){
 	User user;
 	MYSQL *con=getCon();
 	char sql[100]="select * from t_user where name='";

@@ -6,9 +6,9 @@ char *geterrmsg(int state){
 			return "成功";
 		case FAIL:
 			return "失败";
-		case UNREGISTION:
+		case UNREGIST:
 			return "账户未注册";
-		case WRONGPASSWD:
+		case WRONGPWD:
 			return "密码错误";
 		case DUPLICATE_NAME:
 			return "用户名重复";

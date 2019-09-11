@@ -4,7 +4,7 @@
  *
  *****************************/
 
-#include "config.h"
+#include "../base/config.h"
 
 
 int main(void){
