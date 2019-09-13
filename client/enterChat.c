@@ -7,7 +7,7 @@ void enterChat(User *user,int fd){
 	int choice;
 	pthread_t pid;
 	Message msg;
-	pthread_create(pid,NULL,(void *)recvMsg,fd);
+	pthread_create(&pid,NULL,(void *)recvMsg,&fd);
 	if(pid==-1){
 		printf("create recvMsg thread error\n");
 		close(fd);
@@ -53,13 +53,13 @@ void enterChat(User *user,int fd){
 				break;
 			case LISTUSERS:
 				msg.msgType=LISTUSERS;
-				msg.content="";
+				strcpy(msg.content,"");
 				memcpy(buf,&msg,sizeof(msg));
 				send(fd,buf,sizeof(buf),0);
 				break;
 			case LOGOUT:
 				msg.msgType=LOGOUT;       	
-                        	msg.content="";
+                        	strcpy(msg.content,"");
                         	memcpy(buf,&msg,sizeof(msg));
                         	send(fd,buf,sizeof(buf),0);
 				close(fd);

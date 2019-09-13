@@ -1,4 +1,5 @@
 #include "../base/config.h"
+extern Linked *userList;
 
 void groupChat(Message *msg,int fd){
 	User *user;

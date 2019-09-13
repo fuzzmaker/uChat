@@ -20,6 +20,7 @@
 #define SERVER_IP "127.0.0.1"
 #define SERVER_PORT 8888
 #define MAX_LISTEN_NUM 20
+#define MAX_NAME_LEN 20
 #define DB_FILE "/var/db/chatuser"
 #define MAX_BUFSIZE 8126
 #define MAX_MSGSIZE 2048
@@ -27,7 +28,7 @@
 #define DB_SERVER "127.0.0.1"
 #define DB_UNAME "root"
 #define DB_PASSWD "root"
-#define DB_NAME "test"
+#define DB_NAME "uchat"
 
 /*定义描述符集大小*/
 #ifndef FD_SETSIZE
@@ -45,6 +46,7 @@ enum Flag{
 enum MessageType{
 	REGIST, //注册
 	LOGIN, //登录
+	LOGOUT,//登出
 	LISTUSERS, //查看在线用户列表
 	HISTRECORDS, //查看聊天记录
 	GROUPCHAT, //群聊消息
@@ -69,21 +71,21 @@ enum State{
 
 /*消息结构体*/
 typedef struct _message{
-	char recvName[20]; //接收用户名
-	char sendName[20]; //发送用户名
+	char recvName[MAX_NAME_LEN]; //接收用户名
+	char sendName[MAX_NAME_LEN]; //发送用户名
 	int msgType; //消息类型
 	int state; //消息状态
 	char content[MAX_MSGSIZE]; //消息内容
 	struct sockaddr_in recvAddr; //接收端地址
 	struct sockaddr_in sendAddr; //发送端地址
-	char sendTime[20]; //发送时间
+	char sendTime[MAX_NAME_LEN]; //发送时间
 }Message;
 
 /*用户信息结构体*/
 typedef struct _user{
 	int id;//用户id
-	char name[20]; //用户名
-	char passwd[20]; //密码
+	char name[MAX_NAME_LEN]; //用户名
+	char passwd[MAX_NAME_LEN]; //密码
 	int fd; //套接字描述符
 	int state; //状态
 	char regTime[20]; //注册时间
@@ -118,7 +120,10 @@ void login(int fd);
 void enterChat(User *user,int fd);
 
 /*注册*/
-void registion(int fd); 
+void registion(int fd);
+
+/*处理接收消息*/
+void recvMsg(int fd);
 
 /*主界面提示*/
 void mainInterface();

@@ -17,12 +17,12 @@ void login(int fd){
 	memset(buf,0,MAX_BUFSIZE);
 	//接收服务端消息
 	int len=recv(fd,buf,MAX_BUFSIZE,0);
-	if(len<0){
+	if(len<=0){
 		puts("登录失败,连接异常\n");
 		close(fd);
-		_exit(0);
+		_exit(1);
 	}
-	memcpy(msg,buf,len);
+	memcpy(&msg,buf,len);
 	switch (msg.state){
 		case FAIL:
 			puts(msg.content);

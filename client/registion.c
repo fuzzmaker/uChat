@@ -3,7 +3,7 @@
 #define MAX_NAME_LEN 20
 
 void registion(int fd){
-	Messgae msg;
+	Message msg;
 	char buf[MAX_BUFSIZE];
 	char name[MAX_NAME_LEN+1];
 	char passwd[MAX_NAME_LEN+1];
@@ -37,7 +37,7 @@ void registion(int fd){
 	}
 	memset(&msg,0,sizeof(msg));
 	memcpy(&msg,buf,len);
-	if(msg.magType==RESULT && msg.state=SUCCESS){
+	if(msg.msgType==RESULT && msg.state==SUCCESS){
 		printf("注册成功\n");
 		printf("=================================\n");
 	}else{

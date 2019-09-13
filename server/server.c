@@ -14,7 +14,7 @@ int main(void){
 	int socklen=sizeof(struct sockaddr_in);
 	int sockfd=socket(AF_INET,SOCK_STREAM,0);
 	if(sockfd==-1){
-		fprintf(stderr,"create srever socket error");
+		printf("create srever socket error\n");
 		_exit(1);
 	}
 	memset(&s_addr,0,socklen);
@@ -23,11 +23,11 @@ int main(void){
 	s_addr.sin_addr.s_addr=inet_addr(SERVER_IP);
 	s_addr.sin_port=htons(SERVER_PORT);
 	if(bind(sockfd,(struct sockaddr *)&s_addr,socklen)==-1){
-		fprintf(stderr,"bind server addr error");
+		printf("bind server addr error\n");
 		_exit(1);
 	}
 	if(listen(sockfd,MAX_LISTEN_NUM)==-1){
-		fprintf(stderr,"server listen error ");
+		printf("server listen error\n");
 		_exit(1);
 	}
 	FD_ZERO(&fdset);
@@ -38,13 +38,14 @@ int main(void){
 	timeout.tv_usec=0;
 	while(1){
 		rect=fdset;
-		int readyNum;
+		int readyNum=0;
 		if((readyNum=select(max_fd+1,&rect,NULL,NULL,&timeout))>0){
+			printf("readyNUm:%d\n",readyNum);
 			if(FD_ISSET(sockfd,&rect)){
 				int fd=accept(sockfd,(struct sockaddr *)&c_addr,(socklen_t *)&socklen);
 				int ofd=fd>max_fd?fd:max_fd;
 				if(ofd>=MAX_LISTEN_NUM){
-					fprintf(stderr,"fail to connect,is too many connection...");
+					printf("fail to connect,is too many connection...\n");
 					memset(&msg,0,sizeof(msg));
 					memset(buf,0,MAX_LISTEN_NUM);
 					msg.msgType=RESULT;
@@ -54,6 +55,7 @@ int main(void){
 					send(ofd,buf,sizeof(buf),0);
 
 				}else{
+					printf("接收到新的连接请求max_fd:%d\n",ofd);
 					max_fd=ofd;
 					FD_SET(fd,&fdset);
 					cli_fds[fd]=1;//1代表该位置设置了描述符
@@ -62,6 +64,7 @@ int main(void){
 			}
 			for(int i=0;i<=max_fd;i++){
 				if(cli_fds[i]>0&&FD_ISSET(i,&rect)){
+					printf("接收到客户端消息fd:%d\n",i);
 					pthread_t pid;
 					pthread_create(&pid,NULL,(void *)requestHandler,&i);
 					FD_CLR(i,&rect);

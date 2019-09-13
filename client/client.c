@@ -8,10 +8,11 @@
 
 
 int main(void){
-	Mssage msg;
+	Message msg;
 	int type;
-	char buf[BUF_MAXSIZE];
-	struct sockaddr_in sv_ddr;
+	char buf[MAX_BUFSIZE];
+	struct sockaddr_in sv_addr;
+	struct sockaddr_in cli_addr;
 	int addr_len=sizeof(sv_addr);
 	memset(&sv_addr,0,addr_len);
 	memset(&cli_addr,0,addr_len);
@@ -32,21 +33,21 @@ int main(void){
 		mainInterface();
 		setbuf(stdin,NULL);
 		scanf("%d",&type);
-		memset(buf,0,BUF_MAXSIZE);
+		memset(buf,0,MAX_BUFSIZE);
 		memset(&msg,0,sizeof(msg));
 		switch(type){
 			case 1:
 				msg.msgType=LOGIN;
-				msg.sendaddr=sv_addr;
-				msg.content="";
+				msg.sendAddr=sv_addr;
+				strcpy(msg.content,"");
 				memcpy(buf,&msg,sizeof(msg));
 				send(sockfd,buf,sizeof(buf),0);
 				login(sockfd);
 				break;
 			case 2:
-				msg.msgType=REGISTION;
-				msg.sendaddr=sv_addr;
-				msg.content="";
+				msg.msgType=REGIST;
+				msg.sendAddr=sv_addr;
+				strcpy(msg.content,"");
 				memcpy(buf,&msg,sizeof(msg));
 				send(sockfd,buf,sizeof(buf),0);
 				registion(sockfd);

@@ -1,13 +1,13 @@
 #include "../base/config.h"
 
 MYSQL *getCon(){
-	MYSQL con;
-	mysql_init(&con);
-	if(mysql_real_connect(&con,DB_SERVER,DB_UNAME,DB_PASSWD,DB_NAME,0,NULL,0)==NULL){
-		errorMsg(&con);
+	MYSQL *con;
+	con=mysql_init(NULL);
+	if(mysql_real_connect(con,DB_SERVER,DB_UNAME,DB_PASSWD,DB_NAME,0,NULL,0)==NULL){
+		errorMsg(con);
 		return NULL;
 	}
-	return &con;
+	return con;
 }
 
 
@@ -66,7 +66,7 @@ int updateUserState(const char *name,const int state){
 }
 
 User *getUserByName(const char *name){
-	User user;
+	User *user=NULL;
 	MYSQL *con=getCon();
 	char sql[100]="select * from t_user where name='";
 	strcat(sql,name);
@@ -83,16 +83,16 @@ User *getUserByName(const char *name){
 			return NULL;
 
 		}
-		int num=mysql_num_fields(result);
+		user=malloc(sizeof(user));
 		MYSQL_ROW row=mysql_fetch_row(result);
-		user.id=row[0];
-		user.name=row[1]?row[1]:"";
-		user.passwd=row[2]?row[2]:"";
-		user.state=row[3]?row[3]:-1;
-		user.regTime=row[4]?row[4]:"";
+		user->id=atoi(row[0]);
+		strcpy(user->name,row[1]?row[1]:"");
+		strcpy(user->passwd,row[2]?row[2]:"");
+		user->state=atoi(row[3]?row[3]:"-1");
+		strcpy(user->regTime,row[4]?row[4]:"");
 		mysql_free_result(result);
 		mysql_close(con);
-		return &user;
+		return user;
 	}
 }
 
