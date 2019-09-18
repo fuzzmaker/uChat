@@ -1,15 +1,19 @@
 #include "../base/config.h"
 
-extern Linked *userList;
+extern Linked userList;
+extern int cli_fds[MAX_LISTEN_NUM];
 
 void login_s(Message *msg,int fd){
+	printf("进入登录流程...\n");
 	Message reMsg;
 	char buf[MAX_BUFSIZE];
 	char delims[]=",";
 	char *name,*passwd;
 	memset(buf,0,MAX_BUFSIZE);
 	name=strtok(msg->content,delims);
+	printf("name:%s\n",name);
 	passwd=strtok(NULL,delims);
+	printf("passwd:%s\n",passwd);
 	User *oUser=getUserByName(name);
 	reMsg.msgType=RESULT;
 	if(oUser==NULL){
@@ -19,7 +23,8 @@ void login_s(Message *msg,int fd){
 		memcpy(buf,&reMsg,sizeof(reMsg));
 		send(fd,buf,MAX_BUFSIZE,0);
 		close(fd);
-		_exit(0);
+		cli_fds[fd]=-1;
+		return;
 	}
 	if(oUser->state==ALREADY_ONLINE){
 		printf("用户已在线\n");
@@ -28,7 +33,8 @@ void login_s(Message *msg,int fd){
         	memcpy(buf,&reMsg,sizeof(reMsg));
         	send(fd,buf,MAX_BUFSIZE,0);
         	close(fd);
-		_exit(0);                           
+		cli_fds[fd]=-1;
+		return;                           
 	 }
 	if(strcmp(oUser->passwd,passwd)!=0){
 		printf("密码错误\n");
@@ -37,16 +43,17 @@ void login_s(Message *msg,int fd){
 		memcpy(buf,&reMsg,sizeof(reMsg));
        		send(fd,buf,MAX_BUFSIZE,0);
         	close(fd);
-        	_exit(0);
+		cli_fds[fd]=-1;
+        	return;
 	}
 	//将user信息加入在线用户列表
 	oUser->fd=fd;
-	userList->insertNode(userList,(void *)oUser);
+	userList.insertNode(&userList,(void *)oUser);
 	//回复客户端
 	reMsg.state=SUCCESS;             
 	strcpy(reMsg.content,geterrmsg(reMsg.state));
 	memcpy(buf,&reMsg,sizeof(reMsg));
-       	send(fd,buf,MAX_BUFSIZE,0);
-        _exit(0);
+       	send(fd,buf,sizeof(reMsg),0);
+        return;
 
 }

@@ -6,13 +6,14 @@ void init_linked(Linked *lkd){
 	lkd->tail=NULL;
 	lkd->size=0;
 	lkd->compareTo=NULL;
-	lkd->insertNode;
-	lkd->removeNode;
+	lkd->insertNode=&insertNode;
+	lkd->removeNode=&removeNode;
 }
 
 static void insertNode(Linked *lkd,void *val){
 	Node *new_node=malloc(sizeof(Node));
 	new_node->val=val;
+	new_node->next=NULL;
 	if(lkd->head==NULL){
 		lkd->head=new_node;
 		lkd->tail=new_node;

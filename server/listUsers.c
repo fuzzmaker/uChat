@@ -1,10 +1,10 @@
 #include "../base/config.h"
-extern Linked *userList;
+extern Linked userList;
 
 void listUsers(Message *msg,int fd){
 	Message rectMsg;
 	User *user;
-	Node *temp=userList->head;
+	Node *temp=userList.head;
 	char buf[MAX_BUFSIZE];
 	char name[21];
 	memset(buf,0,sizeof(buf));
@@ -17,9 +17,9 @@ void listUsers(Message *msg,int fd){
 		strcat(rectMsg.content,",");
 		temp=temp->next;
 	}
-	rectMsg.msgType=RESULT;
+	rectMsg.msgType=LISTUSERS;
 	rectMsg.state=SUCCESS;
 	memcpy(buf,&rectMsg,sizeof(rectMsg));
 	send(fd,buf,sizeof(buf),0);
-	_exit(0);
+	return;
 }

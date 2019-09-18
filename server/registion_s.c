@@ -1,8 +1,9 @@
 #include "../base/config.h"
 
 void registion_s(Message *msg,int fd){
+	printf("进入注册流程\n");
 	Message reMsg;
-	User *user;
+	User *user,nUser;
 	char buf[MAX_BUFSIZE];
 	char *name,*passwd;
 	char delims[]=",";
@@ -17,7 +18,8 @@ void registion_s(Message *msg,int fd){
 		strcpy(reMsg.content,"用户名不能为空");
 		memcpy(buf,&reMsg,sizeof(reMsg));
 		send(fd,buf,MAX_BUFSIZE,0);
-		_exit(1);
+		close(fd);
+		return;
 	}
 	if(passwd==NULL || strlen(passwd)==0){
 		printf("密码不能为空\n");
@@ -25,8 +27,10 @@ void registion_s(Message *msg,int fd){
 		strcpy(reMsg.content,"密码不能为空");
 		memcpy(buf,&reMsg,sizeof(reMsg));
 		send(fd,buf,MAX_BUFSIZE,0);
-		_exit(1);
+		close(fd);
+		return;
 	}
+	printf("user name:%s\n",name);
 	user=getUserByName(name);
 	if(user!=NULL){
 		printf("用户名已存在\n");
@@ -34,19 +38,27 @@ void registion_s(Message *msg,int fd){
 		strcpy(reMsg.content,"用户名已存在");
 		memcpy(buf,&reMsg,sizeof(reMsg));
 		send(fd,buf,MAX_BUFSIZE,0);
-		_exit(1);	
+		close(fd);
+		return;	
 	}
+	printf("保存用户信息\n");
 	//保存用户
-	memset(user,0,sizeof(user));
-	strcpy(user->name,name);
-	strcpy(user->passwd,passwd);
-	user->state=NO;
-	addUser(*user);
-	reMsg.state=SUCCESS;
-	printf("注册成功\n");
-	strcpy(reMsg.content,"注册成功,请前往登录");
+	strcpy(nUser.name,name);
+	strcpy(nUser.passwd,passwd);
+	nUser.state=NO;
+	int id=addUser(nUser);
+	if(id<=0){
+		reMsg.state=FAIL;
+		printf("注册失败\n");
+		strcpy(reMsg.content,"注册失败");
+	}else{
+		reMsg.state=SUCCESS;
+		printf("注册成功\n");
+		strcpy(reMsg.content,"注册成功,请前往登录");
+	}
 	memcpy(buf,&reMsg,sizeof(reMsg));
 	send(fd,buf,MAX_BUFSIZE,0);
-	_exit(0);
+	close(fd);
+	return;
 
 }

@@ -26,8 +26,8 @@
 #define MAX_MSGSIZE 2048
 
 #define DB_SERVER "127.0.0.1"
-#define DB_UNAME "root"
-#define DB_PASSWD "root"
+#define DB_UNAME "zyh"
+#define DB_PASSWD "uchat_8888"
 #define DB_NAME "uchat"
 
 /*定义描述符集大小*/
@@ -93,7 +93,7 @@ typedef struct _user{
 
 /*服务端接口定义*/
 /*消息分发处理*/
-void requestHandler(int fd);
+void requestHandler(int *fd);
 
 /*登录逻辑处理*/
 void login_s(Message *msg,int fd);
@@ -123,7 +123,7 @@ void enterChat(User *user,int fd);
 void registion(int fd);
 
 /*处理接收消息*/
-void recvMsg(int fd);
+void recvMsg(int *fd);
 
 /*主界面提示*/
 void mainInterface();

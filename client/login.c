@@ -6,14 +6,19 @@ void login(int fd){
 	char buf[MAX_BUFSIZE];
 	memset(buf,0,MAX_BUFSIZE);
 	memset(&msg,0,sizeof(msg));
-	puts("请输入用户名\n");
+	puts("请输入用户名: ");
 	setbuf(stdin,NULL);
 	scanf("%s",user.name);
-	puts("请输入密码\n");
+	puts("请输入密码: ");
 	scanf("%s",user.passwd);
-	memcpy(buf,&user,sizeof(user));
+	msg.msgType=LOGIN;
+	strcpy(msg.sendName,user.name);
+	strcat(msg.content,user.name);
+	strcat(msg.content,",");
+	strcat(msg.content,user.passwd);
+	memcpy(buf,&msg,sizeof(msg));
 	//发送用户密码到服务端
-	send(fd,buf,strlen(buf),0);
+	send(fd,buf,sizeof(buf),0);
 	memset(buf,0,MAX_BUFSIZE);
 	//接收服务端消息
 	int len=recv(fd,buf,MAX_BUFSIZE,0);
@@ -28,15 +33,19 @@ void login(int fd){
 			puts(msg.content);
 			break;
 		case SUCCESS:
-			puts("登录成功!");
+			puts(msg.content);
 			//进入聊天室
 			enterChat(&user,fd);
 			break;
+		case UNREGIST:
+			puts(msg.content);
+			break;
 		default:
-			puts("unknow state");
+			puts("unknow state\n");
 			break;
 	}
 	close(fd);
-	_exit(0);
+	//_exit(0);
+	return;
 	
 }

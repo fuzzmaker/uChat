@@ -8,14 +8,14 @@ void registion(int fd){
 	char name[MAX_NAME_LEN+1];
 	char passwd[MAX_NAME_LEN+1];
 	memset(&msg,0,sizeof(msg));
-	printf("请输入用户名:\n");
+	printf("请输入用户名(20个字符以内): ");
 	scanf("%s",name);
 	while(strlen(name)>MAX_NAME_LEN){
 		memset(name,0,sizeof(name));
 		printf("用户名长度不超过20个字符,请重新输入:\n");
 		scanf("%s",name);
 	}
-	printf("请输入密码:\n");
+	printf("请输入密码(20个字符以内): ");
 	scanf("%s",passwd);
 	while(strlen(passwd)>MAX_NAME_LEN){
 		memset(passwd,0,sizeof(passwd));
@@ -33,19 +33,18 @@ void registion(int fd){
 	if((len=recv(fd,buf,MAX_BUFSIZE,0))<=0){
 		printf("注册失败\n");
 		close(fd);
-		_exit(1);
+		return;
 	}
 	memset(&msg,0,sizeof(msg));
 	memcpy(&msg,buf,len);
 	if(msg.msgType==RESULT && msg.state==SUCCESS){
-		printf("注册成功\n");
+		puts(msg.content);
 		printf("=================================\n");
 	}else{
-		printf("注册失败:\n");
-		printf("%s\n",msg.content);
+		puts(msg.content);
 		printf("=================================\n");
 	}
 	close(fd);
-	_exit(0);
+	return;
 
 }

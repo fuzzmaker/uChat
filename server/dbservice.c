@@ -18,24 +18,19 @@ int addUser(User user){
 	time(&timeout);
 	struct tm *now;
 	now=localtime(&timeout);
-	mysql_init(con);
-	if(mysql_real_connect(con,"127.0.0.1","root","root","test",0,NULL,0)==NULL){
-		printf("connect mysql error %d:%s\n",mysql_errno(con),mysql_error(con));
-		_exit(1);
-	}
 	sprintf(user.regTime,"%d-%d-%d %d:%d:%d",now->tm_year+1900,now->tm_mon+1,now->tm_mday,now->tm_hour,now->tm_min,now->tm_sec);
-	char sql[100]="insert into t_user values(NULL,'";
+	char sql[100]="insert into user values(NULL,'";
 	strcat(sql,user.name);
 	strcat(sql,"','");
 	strcat(sql,user.passwd);
 	strcat(sql,"','");
 	sprintf(buf,"%d",user.state);
-	buf[2]=0;
 	strcat(sql,buf);
 	strcat(sql,"',str_to_date('");
 	strcat(sql,user.regTime);
 	strcat(sql,"',");
 	strcat(sql,"'%Y-%m-%d %H:%i:%s'))");
+	printf("sql: %s\n",sql);
 	if(mysql_query(con,sql)){
 		printf("insert user error %d:%s\n",mysql_errno(con),mysql_error(con));
 		mysql_close(con);
@@ -49,7 +44,7 @@ int addUser(User user){
 
 int updateUserState(const char *name,const int state){
 	MYSQL *con=getCon();
-	char sql[100]="update t_user set state='";
+	char sql[100]="update user set state='";
 	char buf[2]={0};
 	sprintf(buf,"%d",state);
 	strcat(sql,buf);
@@ -68,9 +63,10 @@ int updateUserState(const char *name,const int state){
 User *getUserByName(const char *name){
 	User *user=NULL;
 	MYSQL *con=getCon();
-	char sql[100]="select * from t_user where name='";
+	char sql[100]="select * from user where name='";
 	strcat(sql,name);
 	strcat(sql,"'");
+	printf("sql: %s\n",sql);
 	if(mysql_query(con,sql)){
 		errorMsg(con);	
 		mysql_close(con);
@@ -83,7 +79,12 @@ User *getUserByName(const char *name){
 			return NULL;
 
 		}
-		user=malloc(sizeof(user));
+		int rownum=mysql_num_rows(result);
+		if(rownum<=0){
+			mysql_close(con);
+			return NULL;
+		}
+		user=malloc(sizeof(struct _user));
 		MYSQL_ROW row=mysql_fetch_row(result);
 		user->id=atoi(row[0]);
 		strcpy(user->name,row[1]?row[1]:"");
@@ -97,5 +98,5 @@ User *getUserByName(const char *name){
 }
 
 void errorMsg(MYSQL *con){
-	fprintf(stderr,"error %d:%s\n",mysql_errno(con),mysql_error(con));
+	printf("error %d:%s\n",mysql_errno(con),mysql_error(con));
 }

@@ -1,12 +1,12 @@
 #include "../base/config.h"
 
-void recvMsg(int fd){
+void recvMsg(int *fd){
 	Message msg;
 	char buf[MAX_BUFSIZE];
 	while(1){
 		memset(&msg,0,sizeof(msg));
 		memset(buf,0,sizeof(buf));
-		int len=recv(fd,buf,sizeof(buf),0);
+		int len=recv(*fd,buf,sizeof(buf),0);
 		if(len>0){
 			memcpy(&msg,buf,len);
 			switch(msg.msgType){

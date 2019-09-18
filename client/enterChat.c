@@ -14,13 +14,14 @@ void enterChat(User *user,int fd){
 		_exit(1);
 	}
 	while(1){	
+		choice=-1;
 		memset(&msg,0,sizeof(msg));
 		memset(buf,0,MAX_BUFSIZE);
 		chatTypeInterface();
 		setbuf(stdin,NULL);
 		scanf("%d",&choice);
 		switch(choice){
-			case GROUPCHAT:
+			case 1://群聊
 				while(1){
 					memset(&msg,0,sizeof(msg));
 					memset(buf,0,sizeof(buf));
@@ -34,7 +35,7 @@ void enterChat(User *user,int fd){
 					send(fd,buf,sizeof(buf),0);
 				}
 				break;
-			case PRIVCHAT:
+			case 2://私聊
 				while(1){
 					memset(&msg,0,sizeof(msg));
 					memset(buf,0,sizeof(buf));
@@ -51,13 +52,13 @@ void enterChat(User *user,int fd){
 					send(fd,buf,sizeof(buf),0);
 				}
 				break;
-			case LISTUSERS:
+			case 3://查看在线用户
 				msg.msgType=LISTUSERS;
 				strcpy(msg.content,"");
 				memcpy(buf,&msg,sizeof(msg));
 				send(fd,buf,sizeof(buf),0);
 				break;
-			case LOGOUT:
+			case 4://退出
 				msg.msgType=LOGOUT;       	
                         	strcpy(msg.content,"");
                         	memcpy(buf,&msg,sizeof(msg));
