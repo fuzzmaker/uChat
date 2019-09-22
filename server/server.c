@@ -3,6 +3,7 @@
 
 Linked userList;
 int cli_fds[MAX_LISTEN_NUM];
+extern int errno;
 
 int main(void){
 	struct sockaddr_in s_addr,c_addr;
@@ -72,6 +73,15 @@ int main(void){
 			}
 			for(int i=0;i<=max_fd;i++){
 				if(cli_fds[i]>0&&FD_ISSET(i,&fdset)){
+					struct tcp_info info;
+					int slen=sizeof(info);
+					if(getsockopt(i,IPPROTO_TCP,TCP_INFO,&info,(socklen_t *)&slen)==0){
+						if(info.tcpi_state!=1){
+							close(i);
+							cli_fds[i]=-1;
+							printf("client closed\n");
+						}
+					}
 					pthread_t pid;
 					pthread_create(&pid,NULL,(void *)requestHandler,&i);
 					FD_CLR(i,&fdset);

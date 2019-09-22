@@ -8,6 +8,8 @@
 #include<stdlib.h>
 #include<unistd.h>
 #include<string.h>
+#include<errno.h>
+#include<linux/tcp.h>
 #include<sys/socket.h>
 #include<sys/types.h>
 #include<sys/select.h>

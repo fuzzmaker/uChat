@@ -30,6 +30,9 @@ void enterChat(User *user,int fd){
 					strcpy(msg.sendName,user->name);
 					printf("消息输入:\n");
 					scanf("%s",msgbuf);
+					if(memcmp(msgbuf,"quit",3)==0){
+						break;
+					}
 					strcpy(msg.content,msgbuf);
 					memcpy(buf,&msg,sizeof(msg));
 					send(fd,buf,sizeof(buf),0);
@@ -47,6 +50,9 @@ void enterChat(User *user,int fd){
 					strcpy(msg.recvName,recvName);
 					printf("请输入消息内容:\n");
 					scanf("%s",msgbuf);
+					if(memcmp(msgbuf,"quit",4)==0){
+						break;
+					}
 					strcpy(msg.content,msgbuf);
 					memcpy(buf,&msg,sizeof(msg));
 					send(fd,buf,sizeof(buf),0);
