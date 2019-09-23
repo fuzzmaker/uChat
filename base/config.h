@@ -113,6 +113,9 @@ void histRecords(Message *msg,int fd);
 void logout_s(Message *msg,int fd);
 /*获取错误消息*/
 char *geterrmsg(int state);
+/*用户自定义比较*/
+int userCompare(void *u1,void *u2);
+
 
 /*客户端接口定义*/
 /*登录*/
@@ -135,6 +138,9 @@ void helpInterface();
 
 /*聊天类型展示接口*/
 void chatTypeInterface();
+
+/*显示在线用户列表*/
+void listUsers_c(Message *msg);
 
 /*数据库操作接口*/
 /*获取连接*/

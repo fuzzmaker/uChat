@@ -10,6 +10,7 @@ int main(void){
 	struct timeval timeout;
 	char buf[MAX_BUFSIZE];
 	init_linked(&userList);
+	userList.compareTo=userCompare;
 	Message msg;
 	fd_set fdset,rect;
 	int max_fd=-1;
@@ -60,8 +61,8 @@ int main(void){
 					strcpy(msg.content,"连接已达上限,请稍后再试");
 					msg.state=CONN_LIMIT;
 					memcpy(buf,&msg,sizeof(msg));
-					send(ofd,buf,sizeof(buf),0);
-
+					send(fd,buf,sizeof(buf),0);
+					close(fd);
 				}else{
 					printf("接收到新的连接请求max_fd:%d\n",ofd);
 					max_fd=ofd;
@@ -79,6 +80,8 @@ int main(void){
 						if(info.tcpi_state!=1){
 							close(i);
 							cli_fds[i]=-1;
+							User rmUser={fd:i};
+							userList.removeNode(&userList,&rmUser);
 							printf("client closed\n");
 						}
 					}
@@ -93,4 +96,10 @@ int main(void){
 	}
 	close(sockfd);
 	_exit(0);
+}
+
+int userCompare(void *u1,void *u2){
+	User *user1=(User *)u1;
+	User *user2=(User *)u2;
+	return (user1->fd)-(user2->fd);
 }

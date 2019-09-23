@@ -11,16 +11,18 @@ void recvMsg(int *fd){
 			memcpy(&msg,buf,len);
 			switch(msg.msgType){
 				case PRIVCHAT:
-					printf("private chat:\n");
-					printf("%s: %s\n",msg.sendName,msg.content);
+					if(msg.state==NOT_ONLINE){
+						printf("对方不在线\n");
+					}else{
+						printf("%s: %s\n",msg.sendName,msg.content);
+					}
 					break;
 				case GROUPCHAT:
-					printf("group chat:\n");
 					printf("%s: %s\n",msg.sendName,msg.content);
 					break;
 				case LISTUSERS:
 					printf("online user list:\n");
-					printf("%s\n",msg.content);
+					listUsers_c(&msg);
 					break;
 				default:
 					break;
@@ -30,3 +32,11 @@ void recvMsg(int *fd){
 	_exit(0);
 }
 
+void listUsers_c(Message *msg){
+	char delim[]=",";
+	char *uname=strtok(msg->content,delim);
+	while(uname!=NULL){
+		printf("%s\n",uname);
+		uname=strtok(NULL,delim);
+	}
+}

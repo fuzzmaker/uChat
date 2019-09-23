@@ -1,4 +1,5 @@
 #include "../base/config.h"
+extern int cli_fds[MAX_LISTEN_NUM];
 
 void registion_s(Message *msg,int fd){
 	printf("进入注册流程\n");
@@ -19,6 +20,7 @@ void registion_s(Message *msg,int fd){
 		memcpy(buf,&reMsg,sizeof(reMsg));
 		send(fd,buf,MAX_BUFSIZE,0);
 		close(fd);
+		cli_fds[fd]=-1;
 		return;
 	}
 	if(passwd==NULL || strlen(passwd)==0){
@@ -28,6 +30,7 @@ void registion_s(Message *msg,int fd){
 		memcpy(buf,&reMsg,sizeof(reMsg));
 		send(fd,buf,MAX_BUFSIZE,0);
 		close(fd);
+		cli_fds[fd]=-1;
 		return;
 	}
 	printf("user name:%s\n",name);
@@ -38,6 +41,7 @@ void registion_s(Message *msg,int fd){
 		strcpy(reMsg.content,"用户名已存在");
 		memcpy(buf,&reMsg,sizeof(reMsg));
 		send(fd,buf,MAX_BUFSIZE,0);
+		cli_fds[fd]=-1;
 		close(fd);
 		return;	
 	}
@@ -59,6 +63,7 @@ void registion_s(Message *msg,int fd){
 	memcpy(buf,&reMsg,sizeof(reMsg));
 	send(fd,buf,MAX_BUFSIZE,0);
 	close(fd);
+	cli_fds[fd]=-1;
 	return;
 
 }

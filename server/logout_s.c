@@ -1,14 +1,7 @@
 #include "../base/config.h"
 extern Linked userList;
 
-int userCompare(void *u1,void *u2){
-	User *user1=(User *)u1;
-	User *user2=(User *)u2;
-	return memcmp(user1->name,user2->name,MAX_NAME_LEN);
-}
-
 void logout_s(Message *msg,int fd){
-	userList.compareTo=userCompare;
 	User user;
 	Message rectMsg;
 	char buf[MAX_BUFSIZE];

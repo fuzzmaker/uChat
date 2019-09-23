@@ -30,7 +30,7 @@ void enterChat(User *user,int fd){
 					strcpy(msg.sendName,user->name);
 					printf("消息输入:\n");
 					scanf("%s",msgbuf);
-					if(memcmp(msgbuf,"quit",3)==0){
+					if(memcmp(msgbuf,"quit",4)==0){
 						break;
 					}
 					strcpy(msg.content,msgbuf);

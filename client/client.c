@@ -28,7 +28,7 @@ int main(void){
 		if(clifd==-1){
 			puts("connect to server error\n");
 			close(sockfd);
-			continue;
+			_exit(1);
 		}
 		mainInterface();
 		type=0;
