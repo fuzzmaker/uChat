@@ -21,8 +21,17 @@ void recvMsg(int *fd){
 					printf("%s: %s\n",msg.sendName,msg.content);
 					break;
 				case LISTUSERS:
-					printf("online user list:\n");
+					printf("在线用户列表:\n");
 					listUsers_c(&msg);
+					break;
+				case LOGOUT:
+					if(msg.state==SUCCESS){
+						printf("登出成功\n");
+						close(*fd);
+						_exit(0);
+					}else{
+						printf("登出失败\n");
+					}
 					break;
 				default:
 					break;

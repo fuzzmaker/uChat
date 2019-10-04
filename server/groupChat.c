@@ -1,10 +1,10 @@
 #include "../base/config.h"
-extern Linked userList;
+extern Linked *userList;
 
 void groupChat(Message *msg,int fd){
 	User *user;
 	char buf[MAX_BUFSIZE];
-	Node *cursor=userList.head;
+	Node *cursor=userList->head;
 	while(cursor!=NULL){
 		user=(User *)(cursor->val);
 		if(user==NULL) continue;

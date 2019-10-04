@@ -6,7 +6,7 @@ serverSh: ../base/config.h server.o config.o dbservice.o login_s.o registion_s.o
 		requestHandler.o privChat.o groupChat.o listUsers.o logout_s.o linked.o -lpthread -I/usr/include/mysql -L/usr/lib/mysql -lmysqlclient
 
 server.o: server.c ../base/config.h config.o
-	gcc -g -c server.c
+	gcc -g -c server.c 
 
 dbservice.o: dbservice.c ../base/config.h config.o
 	gcc -g -c dbservice.c
@@ -18,7 +18,7 @@ registion_s.o: registion_s.c ../base/config.h config.o
 	gcc -g -c registion_s.c
 
 requestHandler.o: requestHandler.c ../base/config.h config.o
-	gcc -g -c requestHandler.c
+	gcc -g -c requestHandler.c 
 
 privChat.o: privChat.c ../base/config.h config.o
 	gcc -g -c privChat.c

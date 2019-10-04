@@ -49,6 +49,7 @@ int main(void){
 				break;
 			default:
 				puts("unknow operation\n");
+				close(sockfd);
 				break;
 		}
 	}

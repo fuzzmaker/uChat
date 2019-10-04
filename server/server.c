@@ -1,19 +1,20 @@
 #include "../base/config.h"
 
 
-Linked userList;
+Linked *userList;
 int cli_fds[MAX_LISTEN_NUM];
+pthread_mutex_t mutex;
+static int max_fd;
 extern int errno;
 
 int main(void){
 	struct sockaddr_in s_addr,c_addr;
 	struct timeval timeout;
 	char buf[MAX_BUFSIZE];
-	init_linked(&userList);
-	userList.compareTo=userCompare;
+	userList=create_linked(&userCompare);
+	pthread_mutex_init(&mutex,NULL);
 	Message msg;
 	fd_set fdset,rect;
-	int max_fd=-1;
 	int socklen=sizeof(struct sockaddr_in);
 	int sockfd=socket(AF_INET,SOCK_STREAM,0);
 	if(sockfd==-1){
@@ -38,7 +39,7 @@ int main(void){
 	}
 	max_fd=sockfd;
 	max_fd=sockfd>max_fd?sockfd:max_fd;
-	timeout.tv_sec=4;
+	timeout.tv_sec=10;
 	timeout.tv_usec=0;
 	while(1){
 		FD_ZERO(&fdset);
@@ -52,9 +53,8 @@ int main(void){
 		if((readyNum=select(max_fd+1,&fdset,NULL,NULL,&timeout))>0){
 			if(FD_ISSET(sockfd,&fdset)){
 				int fd=accept(sockfd,(struct sockaddr *)&c_addr,(socklen_t *)&socklen);
-				int ofd=fd>max_fd?fd:max_fd;
-				if(ofd>=MAX_LISTEN_NUM){
-					printf("fail to connect,is too many connection...\n");
+				if(fd>=MAX_LISTEN_NUM){
+					printf("连接失败,在线用户数已达上线...\n");
 					memset(&msg,0,sizeof(msg));
 					memset(buf,0,MAX_LISTEN_NUM);
 					msg.msgType=RESULT;
@@ -64,8 +64,8 @@ int main(void){
 					send(fd,buf,sizeof(buf),0);
 					close(fd);
 				}else{
-					printf("接收到新的连接请求max_fd:%d\n",ofd);
-					max_fd=ofd;
+					printf("接收到新的连接请求max_fd:%d\n",fd);
+					updateMaxFD(fd);//更新当前最大fd
 					FD_CLR(fd,&fdset);
 					cli_fds[fd]=1;//1代表该位置设置了描述符
 					if(readyNum--<=0) continue;
@@ -74,20 +74,20 @@ int main(void){
 			}
 			for(int i=0;i<=max_fd;i++){
 				if(cli_fds[i]>0&&FD_ISSET(i,&fdset)){
+					printf("接收到fd:%d 消息\n",i);
+					FD_CLR(i,&fdset);
 					struct tcp_info info;
 					int slen=sizeof(info);
-					if(getsockopt(i,IPPROTO_TCP,TCP_INFO,&info,(socklen_t *)&slen)==0){
-						if(info.tcpi_state!=1){
-							close(i);
-							cli_fds[i]=-1;
-							User rmUser={fd:i};
-							userList.removeNode(&userList,&rmUser);
-							printf("client closed\n");
-						}
+					getsockopt(i,IPPROTO_TCP,TCP_INFO,&info,(socklen_t *)&slen);
+					if(info.tcpi_state!=1){
+						rmClient(i,1);
+						printf("用户下线通知fd:%d\n",i);
+					}else{
+						pthread_t pid;
+						sData data={i};
+						pthread_create(&pid,NULL,(void *)requestHandler,&data);
+						printf("创建线程fd:%d\n",i);
 					}
-					pthread_t pid;
-					pthread_create(&pid,NULL,(void *)requestHandler,&i);
-					FD_CLR(i,&fdset);
 					if(readyNum--<=0) break;
 				}
 			}
@@ -99,7 +99,27 @@ int main(void){
 }
 
 int userCompare(void *u1,void *u2){
+	if(u1==NULL || u2==NULL) return -1; 
 	User *user1=(User *)u1;
 	User *user2=(User *)u2;
 	return (user1->fd)-(user2->fd);
+}
+
+
+void rmClient(int fd,int flag){
+	pthread_mutex_lock(&mutex);
+	cli_fds[fd]=-1;
+	max_fd=max_fd==fd?max_fd--:max_fd;
+	if(flag){
+		User user={fd:fd};
+		userList->removeNode(userList,&user);
+	}
+	pthread_mutex_unlock(&mutex);
+	close(fd);
+}
+
+void updateMaxFD(int fd){
+	pthread_mutex_lock(&mutex);
+	max_fd=max_fd>fd?max_fd:fd;
+	pthread_mutex_unlock(&mutex);
 }

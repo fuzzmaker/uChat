@@ -18,7 +18,11 @@ void login(int fd){
 	strcat(msg.content,user.passwd);
 	memcpy(buf,&msg,sizeof(msg));
 	//发送用户密码到服务端
-	send(fd,buf,sizeof(buf),0);
+	if(send(fd,buf,sizeof(buf),0)==-1){
+		printf("发送登录请求失败\n");
+		close(fd);
+		return;
+	}
 	memset(buf,0,MAX_BUFSIZE);
 	//接收服务端消息
 	int len=recv(fd,buf,MAX_BUFSIZE,0);
@@ -27,6 +31,7 @@ void login(int fd){
 		close(fd);
 		_exit(1);
 	}
+	memset(&msg,0,sizeof(msg));
 	memcpy(&msg,buf,len);
 	switch (msg.state){
 		case FAIL:

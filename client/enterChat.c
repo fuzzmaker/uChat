@@ -60,17 +60,18 @@ void enterChat(User *user,int fd){
 				break;
 			case 3://查看在线用户
 				msg.msgType=LISTUSERS;
+				strcpy(msg.sendName,user->name);
 				strcpy(msg.content,"");
 				memcpy(buf,&msg,sizeof(msg));
 				send(fd,buf,sizeof(buf),0);
 				break;
-			case 4://退出
-				msg.msgType=LOGOUT;       	
+			case 4://退出登录
+				msg.msgType=LOGOUT;       
+				strcpy(msg.sendName,user->name);	
                         	strcpy(msg.content,"");
                         	memcpy(buf,&msg,sizeof(msg));
-                        	send(fd,buf,sizeof(buf),0);
-				close(fd);
-				_exit(0);
+                        	send(fd,buf,sizeof(buf),0); 
+				break;
 			default :
 				puts("unknow type\n");
 				break;

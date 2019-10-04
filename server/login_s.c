@@ -1,7 +1,6 @@
 #include "../base/config.h"
 
-extern Linked userList;
-extern int cli_fds[MAX_LISTEN_NUM];
+extern Linked *userList;
 
 void login_s(Message *msg,int fd){
 	printf("进入登录流程...\n");
@@ -9,7 +8,9 @@ void login_s(Message *msg,int fd){
 	char buf[MAX_BUFSIZE];
 	char delims[]=",";
 	char *name,*passwd;
+	int retry=3;//消息重发次数
 	memset(buf,0,MAX_BUFSIZE);
+	memset(&reMsg,0,sizeof(Message));
 	name=strtok(msg->content,delims);
 	printf("name:%s\n",name);
 	passwd=strtok(NULL,delims);
@@ -22,8 +23,7 @@ void login_s(Message *msg,int fd){
 		strcpy(reMsg.content,geterrmsg(reMsg.state));
 		memcpy(buf,&reMsg,sizeof(reMsg));
 		send(fd,buf,MAX_BUFSIZE,0);
-		close(fd);
-		cli_fds[fd]=-1;
+		rmClient(fd,0);
 		return;
 	}
 	if(oUser->state==ALREADY_ONLINE){
@@ -32,8 +32,7 @@ void login_s(Message *msg,int fd){
         	strcpy(reMsg.content,geterrmsg(reMsg.state));
         	memcpy(buf,&reMsg,sizeof(reMsg));
         	send(fd,buf,MAX_BUFSIZE,0);
-        	close(fd);
-		cli_fds[fd]=-1;
+        	rmClient(fd,0);
 		return;                           
 	 }
 	if(strcmp(oUser->passwd,passwd)!=0){
@@ -42,13 +41,12 @@ void login_s(Message *msg,int fd){
 		strcpy(reMsg.content,geterrmsg(reMsg.state));
 		memcpy(buf,&reMsg,sizeof(reMsg));
        		send(fd,buf,MAX_BUFSIZE,0);
-        	close(fd);
-		cli_fds[fd]=-1;
+		rmClient(fd,0);
         	return;
 	}
 	//将user信息加入在线用户列表
 	oUser->fd=fd;
-	userList.insertNode(&userList,(void *)oUser);
+	userList->insertNode(userList,oUser);
 	//回复客户端
 	reMsg.state=SUCCESS;             
 	strcpy(reMsg.content,geterrmsg(reMsg.state));

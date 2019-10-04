@@ -1,5 +1,4 @@
 #include "../base/config.h"
-extern int cli_fds[MAX_LISTEN_NUM];
 
 void registion_s(Message *msg,int fd){
 	printf("进入注册流程\n");
@@ -8,7 +7,10 @@ void registion_s(Message *msg,int fd){
 	char buf[MAX_BUFSIZE];
 	char *name,*passwd;
 	char delims[]=",";
-	memset(&reMsg,0,sizeof(reMsg));
+	int msgLen=sizeof(Message);
+	int userLen=sizeof(User);
+	memset(&reMsg,0,msgLen);
+	memset(&nUser,0,userLen);
 	memset(buf,0,MAX_BUFSIZE);
 	name=strtok(msg->content,delims);
 	passwd=strtok(NULL,delims);
@@ -17,20 +19,18 @@ void registion_s(Message *msg,int fd){
 		printf("用户名不能为空\n");
 		reMsg.state=FAIL;
 		strcpy(reMsg.content,"用户名不能为空");
-		memcpy(buf,&reMsg,sizeof(reMsg));
+		memcpy(buf,&reMsg,msgLen);
 		send(fd,buf,MAX_BUFSIZE,0);
-		close(fd);
-		cli_fds[fd]=-1;
+		rmClient(fd,0);
 		return;
 	}
 	if(passwd==NULL || strlen(passwd)==0){
 		printf("密码不能为空\n");
 		reMsg.state=FAIL;
 		strcpy(reMsg.content,"密码不能为空");
-		memcpy(buf,&reMsg,sizeof(reMsg));
+		memcpy(buf,&reMsg,msgLen);
 		send(fd,buf,MAX_BUFSIZE,0);
-		close(fd);
-		cli_fds[fd]=-1;
+		rmClient(fd,0);
 		return;
 	}
 	printf("user name:%s\n",name);
@@ -39,13 +39,11 @@ void registion_s(Message *msg,int fd){
 		printf("用户名已存在\n");
 		reMsg.state=DUPLICATE_NAME;
 		strcpy(reMsg.content,"用户名已存在");
-		memcpy(buf,&reMsg,sizeof(reMsg));
+		memcpy(buf,&reMsg,msgLen);
 		send(fd,buf,MAX_BUFSIZE,0);
-		cli_fds[fd]=-1;
-		close(fd);
+		rmClient(fd,0);
 		return;	
 	}
-	printf("保存用户信息\n");
 	//保存用户
 	strcpy(nUser.name,name);
 	strcpy(nUser.passwd,passwd);
@@ -62,8 +60,7 @@ void registion_s(Message *msg,int fd){
 	}
 	memcpy(buf,&reMsg,sizeof(reMsg));
 	send(fd,buf,MAX_BUFSIZE,0);
-	close(fd);
-	cli_fds[fd]=-1;
+	rmClient(fd,0);
 	return;
 
 }

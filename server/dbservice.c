@@ -13,13 +13,17 @@ MYSQL *getCon(){
 
 int addUser(User user){
 	MYSQL *con=getCon();
+	if(con==NULL){
+		printf("新增用户失败,获取数据库连接失败\n");
+		return -1;
+	}
 	char buf[2];
 	time_t timeout;
 	time(&timeout);
 	struct tm *now;
 	now=localtime(&timeout);
 	sprintf(user.regTime,"%d-%d-%d %d:%d:%d",now->tm_year+1900,now->tm_mon+1,now->tm_mday,now->tm_hour,now->tm_min,now->tm_sec);
-	char sql[100]="insert into user values(NULL,'";
+	char sql[255]="insert into user values(NULL,'";
 	strcat(sql,user.name);
 	strcat(sql,"','");
 	strcat(sql,user.passwd);
@@ -44,7 +48,11 @@ int addUser(User user){
 
 int updateUserState(const char *name,const int state){
 	MYSQL *con=getCon();
-	char sql[100]="update user set state='";
+	if(con==NULL){
+		printf("更新用户失败,获取数据库连接失败\n");
+		return -1;
+	}
+	char sql[255]="update user set state='";
 	char buf[2]={0};
 	sprintf(buf,"%d",state);
 	strcat(sql,buf);
@@ -63,7 +71,11 @@ int updateUserState(const char *name,const int state){
 User *getUserByName(const char *name){
 	User *user=NULL;
 	MYSQL *con=getCon();
-	char sql[100]="select * from user where name='";
+	if(con==NULL){
+		printf("查询用户失败,获取数据库连接失败\n");
+		return NULL;
+	}
+	char sql[255]="select * from user where name='";
 	strcat(sql,name);
 	strcat(sql,"'");
 	printf("sql: %s\n",sql);

@@ -83,6 +83,11 @@ typedef struct _message{
 	char sendTime[MAX_NAME_LEN]; //发送时间
 }Message;
 
+/*客户端连接消息体*/
+typedef struct s_data{
+	int fd;
+}sData;
+
 /*用户信息结构体*/
 typedef struct _user{
 	int id;//用户id
@@ -95,7 +100,7 @@ typedef struct _user{
 
 /*服务端接口定义*/
 /*消息分发处理*/
-void requestHandler(int *fd);
+void requestHandler(void *data);
 
 /*登录逻辑处理*/
 void login_s(Message *msg,int fd);
@@ -115,7 +120,10 @@ void logout_s(Message *msg,int fd);
 char *geterrmsg(int state);
 /*用户自定义比较*/
 int userCompare(void *u1,void *u2);
-
+/*移除在线用户*/
+void rmClient(int fd,int flags);
+/*更新当前最大客户端连接描述符*/
+void updateMaxFD(int fd);
 
 /*客户端接口定义*/
 /*登录*/

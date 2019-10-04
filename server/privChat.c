@@ -1,10 +1,10 @@
 #include "../base/config.h"
-extern Linked userList;
+extern Linked *userList;
 
 void privChat(Message *msg,int fd){
 	printf("进入私聊...\n");
 	Message sendMsg;
-	Node *cursor=userList.head;
+	Node *cursor=userList->head;
 	char buf[MAX_BUFSIZE];
 	User *user;
 	int tofd=-1;
